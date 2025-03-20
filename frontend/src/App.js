@@ -2,51 +2,49 @@ import React, { useState, useEffect } from "react";
 
 const App = () => {
   const [flats, setFlats] = useState([]);
-  const [userLocation, setUserLocation] = useState(null);
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition((position) => {
       const { latitude, longitude } = position.coords;
-      console.log(latitude, longitude);
 
-      const fect = async () => {
+      const fetchData = async () => {
         const response = await fetch(
           `https://api.geoapify.com/v2/places?categories=accommodation.hotel&filter=circle:${longitude},${latitude},10000&bias=proximity:${longitude},${latitude}&limit=20&apiKey=255c614fdd074fe5bc7af626836f2fb5`
         );
         const data = await response.json();
-        const fasdf = data.features.map((item) => item.properties.name);
-        setFlats(fasdf);
+        const hotelNames = data.features.map((item) => item.properties.name);
+        setFlats(hotelNames);
       };
 
-      fect();
+      fetchData();
     });
-  }, []); // Empty dependency array means this will run once on mount
+  }, []);
 
   return (
-    <div>
-      <h1>Available Flats</h1>
-      {userLocation ? (
-        <div>
-          <h3>
-            Your Location: Lat: {userLocation.lat}, Lon: {userLocation.lon}
-          </h3>
-          <ul>
-            {flats.length > 0 ? (
-              flats.map((flat, index) => (
-                <li key={index}>
-                  <strong>{flat}</strong>
-                  <br />
-                </li>
-              ))
-            ) : (
-              <p>No flats found within 10 km.</p>
-            )}
+    <div style={{ fontFamily: "Arial, sans-serif", margin: "20px" }}>
+      <h1 style={{ color: "#4CAF50", textAlign: "center" }}>Available Hotels</h1>
+      <div style={{ padding: "10px", backgroundColor: "#f9f9f9", borderRadius: "8px" }}>
+        {flats.length > 0 ? (
+          <ul style={{ listStyleType: "none", padding: "0" }}>
+            {flats.map((flat, index) => (
+              <li
+                key={index}
+                style={{
+                  backgroundColor: "#f1f1f1",
+                  marginBottom: "10px",
+                  padding: "10px",
+                  borderRadius: "5px",
+                  boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                }}
+              >
+                <strong style={{ fontSize: "18px" }}>{flat}</strong>
+              </li>
+            ))}
           </ul>
-        </div>
-      ) : (
-        <p>Loading your location...</p>
-      )}
-        <div>{flats}</div>
+        ) : (
+          <p style={{ textAlign: "center" }}>No hotels found within 10 km.</p>
+        )}
+      </div>
     </div>
   );
 };
