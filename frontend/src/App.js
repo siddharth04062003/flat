@@ -278,6 +278,11 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
   return distance; // Distance in km
 }
 
+// Function to get a random hotel price between 550 and 5500
+function getRandomPrice() {
+  return Math.floor(Math.random() * (5500 - 550 + 1)) + 550;
+}
+
 const App = () => {
   const [flats, setFlats] = useState([]);
   const [userLocation, setUserLocation] = useState(null);
@@ -325,6 +330,7 @@ const App = () => {
 
               // Generate random rating for demo purposes
               const rating = (Math.random() * 2 + 3).toFixed(1);
+              const price = getRandomPrice(); // Generate random price for each hotel
 
               return {
                 name: item.properties.name || "Unnamed Hotel",
@@ -333,6 +339,7 @@ const App = () => {
                 distance: distance.toFixed(2), // Distance in km (rounded to 2 decimal places)
                 facilities: facilities.length > 0 ? facilities : ["No facilities listed"],
                 rating,
+                price, // Adding the price
                 lat: item.properties.lat,
                 lon: item.properties.lon,
               };
@@ -384,7 +391,7 @@ const App = () => {
       <header style={styles.header}>
         <div style={styles.headerContainer}>
           <h1 style={styles.title}>StayFinder</h1>
-          
+
           {/* Search Box */}
           <div style={styles.searchBox}>
             <input
@@ -408,7 +415,7 @@ const App = () => {
               {loading ? "Finding nearby hotels..." : `${sortedHotels.length} Hotels Found`}
             </h2>
           </div>
-          
+
           <div style={styles.selectContainer}>
             <label htmlFor="sortBy" style={styles.sortLabel}>Sort by:</label>
             <select
@@ -446,9 +453,9 @@ const App = () => {
                   >
                     {/* Hotel Image (Placeholder) */}
                     <div style={styles.hotelImage}>
-                      <img 
-                        src={`/api/placeholder/400/320`} 
-                        alt={hotel.name} 
+                      <img
+                        src={`/api/placeholder/400/320`}
+                        alt={hotel.name}
                         style={styles.img}
                       />
                       <div style={styles.ratingBadge}>
@@ -456,21 +463,25 @@ const App = () => {
                         <span style={styles.ratingText}>{hotel.rating}</span>
                       </div>
                     </div>
-                    
+
                     {/* Hotel Info */}
                     <div style={styles.hotelInfo}>
                       <h3 style={styles.hotelName}>{hotel.name}</h3>
-                      
+
                       <div style={styles.addressRow}>
                         <MapPin style={styles.addressIcon} size={18} />
                         <p style={styles.addressText}>{hotel.address}</p>
                       </div>
-                      
+
                       <div style={styles.distanceRow}>
                         <Navigation style={styles.distanceIcon} size={18} />
                         <span style={styles.distanceText}>{hotel.distance} km away</span>
                       </div>
-                      
+
+                      <div style={styles.distanceRow}>
+                        <span style={styles.distanceText}>Price: ₹{hotel.price} Lowest Vendor Pricing !!</span>
+                      </div>
+
                       {/* Facilities */}
                       <div style={styles.facilitiesSection}>
                         <h4 style={styles.facilitiesTitle}>Facilities:</h4>
@@ -483,9 +494,9 @@ const App = () => {
                           ))}
                         </div>
                       </div>
-                      
+
                       {/* Action Button */}
-                      <button 
+                      <button
                         style={{
                           ...styles.button,
                           ...(hoveredCardIndex === index ? styles.buttonHover : {})
@@ -500,7 +511,7 @@ const App = () => {
             ) : (
               <div style={styles.emptyState}>
                 <p style={styles.emptyStateText}>No hotels found matching your criteria</p>
-                <button 
+                <button
                   style={styles.clearButton}
                   onClick={() => setSearchTerm("")}
                 >

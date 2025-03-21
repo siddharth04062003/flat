@@ -4,6 +4,7 @@
   "description": "Frontend for Flats Rental Web Application",
   "main": "index.js",
   "dependencies": {
+    "axios": "^1.8.4",
     "lucide-react": "^0.483.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
